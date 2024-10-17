@@ -23,6 +23,10 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
 #include "stb_image.h"
+#include "Entity.h"
+#include <vector>
+#include <ctime>
+#include "cmath"
 
 enum AppStatus { RUNNING, TERMINATED };
 
@@ -113,7 +117,7 @@ GLuint load_texture(const char* filepath)
 void initialise()
 {
     SDL_Init(SDL_INIT_VIDEO);
-    g_display_window = SDL_CreateWindow("Hello, Playa Input!",
+    g_display_window = SDL_CreateWindow("Project 3",
                                       SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                       WINDOW_WIDTH, WINDOW_HEIGHT,
                                       SDL_WINDOW_OPENGL);
