@@ -47,9 +47,8 @@ constexpr char V_SHADER_PATH[] = "shaders/vertex_textured.glsl",
 
 constexpr float MILLISECONDS_IN_SECOND = 1000.0;
 constexpr char  SPRITESHEET_FILEPATH[] = "george_0.png",
-                PLATFORM_FILEPATH[]    = "platformPack_tile027.png",
-                SPACESHIP_FILEPATH[]   = "Spaceships.png",
-                OBJECT_FILEPATH[]      = "world_tileset.png";
+                PLATFORM_FILEPATH[]    = "world_tileset.png",
+                SPACESHIP_FILEPATH[]   = "Spaceships.png";
 
 constexpr GLint NUMBER_OF_TEXTURES = 1;
 constexpr GLint LEVEL_OF_DETAIL    = 0;
@@ -168,20 +167,20 @@ void initialise()
     );
 
     g_game_state.player->face_up();
-    g_game_state.player->set_position(glm::vec3(0.0f, 2.75f, 0.0f)); // Start at top of screen
-    g_game_state.player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY * 0.0075, 0.0f));
+    g_game_state.player->set_position(glm::vec3(0.0f, 2.9f, 0.0f)); // Start at top of screen
+    g_game_state.player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY * 0.005, 0.0f));
 
     // ————— PLATFORM ————— //
     g_game_state.platforms = new Entity[PLATFORM_COUNT];
 
     for (int i = 0; i < PLATFORM_COUNT; i++)
     {
-        GLuint object_texture_id = load_texture(OBJECT_FILEPATH);
+        GLuint platform_texture_id = load_texture(PLATFORM_FILEPATH);
         if (i == 3) {
-            g_game_state.platforms[i] = Entity(object_texture_id, 0.0f, 37, 16, 16);
+            g_game_state.platforms[i] = Entity(platform_texture_id, 0.0f, 37, 16, 16);
         }
         else {
-            g_game_state.platforms[i] = Entity(object_texture_id, 0.0f, 5, 16, 16);
+            g_game_state.platforms[i] = Entity(platform_texture_id, 0.0f, 5, 16, 16);
         }
         g_game_state.platforms[i].set_scale(glm::vec3(0.5,0.5f,0.0f));
         g_game_state.platforms[i].set_width(g_game_state.platforms[i].get_width() * 0.5f);

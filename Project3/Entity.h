@@ -65,8 +65,8 @@ public:
     void face_up();
     void face_down();
     
-    void move_left()  { m_movement.x = -1.0f; face_left(); }
-    void move_right() { m_movement.x = 1.0f;  face_right(); }
+    void move_left()  { m_acceleration.x = -2.5f; face_left(); }
+    void move_right() { m_acceleration.x = 2.5f;  face_right(); }
     void move_up()    { m_movement.y = 1.0f;  face_up(); }
     void move_down()  { m_movement.y = -1.0f; face_down(); }
 

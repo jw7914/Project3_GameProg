@@ -132,6 +132,7 @@ bool const Entity::check_collision(Entity* other) const
 
     return x_distance < 0.0f && y_distance < 0.0f;
 }
+
 void Entity::update(float delta_time, Entity* collidable_entities, int collidable_entity_count)
 {
     for (int i = 0; i < collidable_entity_count; i++)
@@ -159,10 +160,40 @@ void Entity::update(float delta_time, Entity* collidable_entities, int collidabl
         }
     }
     
-    // Our character moves from left to right, so they need an initial velocity
-    m_velocity.x = m_movement.x * m_speed;
-    
+    // Our character moves from left to right, so they need an initial velocity;
     // And we add the gravity next
+    std::cout << m_acceleration.x << std::endl;
+    // Decelerate acceleration towards 0
+    if (m_acceleration.x > 0) {
+        m_acceleration.x -= 0.15;
+        if (m_acceleration.x < 0) {
+            m_acceleration.x = 0;
+        }
+    }
+    else if (m_acceleration.x < 0) {
+        m_acceleration.x += 0.15;
+        if (m_acceleration.x > 0) {
+            m_acceleration.x = 0;
+        }
+    }
+
+    // Decelerate velocity towards 0 only when acceleration is 0
+    if (m_acceleration.x == 0) {
+        if (m_velocity.x > 0) {
+            m_velocity.x -= 0.05;
+            if (m_velocity.x < 0) {
+                m_velocity.x = 0;
+            }
+        }
+        else if (m_velocity.x < 0) {
+            m_velocity.x += 0.05;
+            if (m_velocity.x > 0) {
+                m_velocity.x = 0;
+            }
+        }
+    }
+
+    std::cout << "Velocity: " << m_velocity.x << std::endl;
     m_velocity += m_acceleration * delta_time;
     m_position += m_velocity * delta_time;
     
