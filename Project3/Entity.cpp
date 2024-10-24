@@ -120,7 +120,7 @@ void Entity::face_right() {
     if (m_animation_indices != NULL) {
         m_animation_indices = m_walking[RIGHT];
     } else {
-        m_rotate_state =4;
+        m_rotate_state = 4;
     }
 }
 
@@ -176,6 +176,9 @@ void Entity::update(float delta_time, Entity* collidable_entities, int collidabl
     }
     else if (m_rotate_state == 3) { // Left
         m_model_matrix = glm::rotate(m_model_matrix, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    }
+    else if (m_rotate_state == 4) { // Right
+        m_model_matrix = glm::rotate(m_model_matrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     }
     m_model_matrix = glm::scale(m_model_matrix, m_scale);
 }

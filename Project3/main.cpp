@@ -48,7 +48,8 @@ constexpr char V_SHADER_PATH[] = "shaders/vertex_textured.glsl",
 constexpr float MILLISECONDS_IN_SECOND = 1000.0;
 constexpr char  SPRITESHEET_FILEPATH[] = "george_0.png",
                 PLATFORM_FILEPATH[]    = "platformPack_tile027.png",
-                SPACESHIP_FILEPATH[]   = "Spaceships.png";
+                SPACESHIP_FILEPATH[]   = "Spaceships.png",
+                OBJECT_FILEPATH[]      = "world_tileset.png";
 
 constexpr GLint NUMBER_OF_TEXTURES = 1;
 constexpr GLint LEVEL_OF_DETAIL    = 0;
@@ -56,7 +57,7 @@ constexpr GLint TEXTURE_BORDER     = 0;
 
 constexpr float FIXED_TIMESTEP = 1.0f / 60.0f;
 constexpr float ACC_OF_GRAVITY = -9.81f;
-constexpr int   PLATFORM_COUNT = 5;
+constexpr int   PLATFORM_COUNT = 20;
 
 // ————— STRUCTS AND ENUMS —————//
 enum AppStatus { RUNNING, TERMINATED };
@@ -119,46 +120,6 @@ GLuint load_texture(const char* filepath)
     return textureID;
 }
 
-void draw_sprite_from_texture_atlas(ShaderProgram *shaderProgram, GLuint texture_id, int index, int rows, int cols)
-{
-    // Step 1: Calculate the UV location of the indexed frame
-    float u_coord = (float) (index % cols) / (float) cols;
-    float v_coord = (float) (index / cols) / (float) rows;
-
-    // Step 2: Calculate its UV size
-    float width = 1.0f / (float) cols;
-    float height = 1.0f / (float) rows;
-
-    // Step 3: Just as we have done before, match the texture coordinates to the vertices
-    float tex_coords[] =
-    {
-        u_coord, v_coord + height, u_coord + width, v_coord + height, u_coord + width,
-        v_coord, u_coord, v_coord + height, u_coord + width, v_coord, u_coord, v_coord
-    };
-
-    float vertices[] =
-    {
-        -0.5, -0.5, 0.5, -0.5,  0.5, 0.5,
-        -0.5, -0.5, 0.5,  0.5, -0.5, 0.5
-    };
-
-    // Step 4: And render
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-
-    glVertexAttribPointer(shaderProgram->get_position_attribute(), 2, GL_FLOAT, false, 0,
-                          vertices);
-    glEnableVertexAttribArray(shaderProgram->get_position_attribute());
-
-    glVertexAttribPointer(shaderProgram->get_tex_coordinate_attribute(), 2, GL_FLOAT, false, 0,
-                          tex_coords);
-    glEnableVertexAttribArray(shaderProgram->get_tex_coordinate_attribute());
-
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    glDisableVertexAttribArray(shaderProgram->get_position_attribute());
-    glDisableVertexAttribArray(shaderProgram->get_tex_coordinate_attribute());
-}
-
 void initialise()
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -206,17 +167,26 @@ void initialise()
         3                          // animation row amount
     );
 
-    g_game_state.player->face_down();
-    g_game_state.player->set_position(glm::vec3(4.0f,2.75f,0.0f));
-//    g_game_state.player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY * 0.1, 0.0f));
+    g_game_state.player->face_up();
+    g_game_state.player->set_position(glm::vec3(0.0f, 2.75f, 0.0f)); // Start at top of screen
+    g_game_state.player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY * 0.0075, 0.0f));
 
     // ————— PLATFORM ————— //
     g_game_state.platforms = new Entity[PLATFORM_COUNT];
 
     for (int i = 0; i < PLATFORM_COUNT; i++)
     {
-        g_game_state.platforms[i].set_texture_id(load_texture(PLATFORM_FILEPATH));
-        g_game_state.platforms[i].set_position(glm::vec3(i - 1.0f, -3.0f, 0.0f));
+        GLuint object_texture_id = load_texture(OBJECT_FILEPATH);
+        if (i == 3) {
+            g_game_state.platforms[i] = Entity(object_texture_id, 0.0f, 37, 16, 16);
+        }
+        else {
+            g_game_state.platforms[i] = Entity(object_texture_id, 0.0f, 5, 16, 16);
+        }
+        g_game_state.platforms[i].set_scale(glm::vec3(0.5,0.5f,0.0f));
+        g_game_state.platforms[i].set_width(g_game_state.platforms[i].get_width() * 0.5f);
+        g_game_state.platforms[i].set_height(g_game_state.platforms[i].get_height() * 0.5f);
+        g_game_state.platforms[i].set_position(glm::vec3(-4.75f + (i*0.5), -3.5f, 0.0f));
         g_game_state.platforms[i].update(0.0f, nullptr, 0);
     }
 

@@ -13,6 +13,8 @@
 		BF4048792CCAA233009C4979 /* kita.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048772CCAA208009C4979 /* kita.png */; };
 		BF40487D2CCAA8E4009C4979 /* Spaceships.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF40487C2CCAA6D0009C4979 /* Spaceships.png */; };
 		BF40487F2CCAAF23009C4979 /* platformPack_tile027.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF40487E2CCAAF12009C4979 /* platformPack_tile027.png */; };
+		BF4048942CCAD5BF009C4979 /* world_tileset.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048932CCAD581009C4979 /* world_tileset.png */; };
+		BF4048952CCAD5C1009C4979 /* platforms.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048922CCAD581009C4979 /* platforms.png */; };
 		DBDF1B532323DE3F007CECB1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DBDF1B522323DE3F007CECB1 /* main.cpp */; };
 		DBDF1B5E2323DE8D007CECB1 /* ShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DBDF1B5D2323DE8D007CECB1 /* ShaderProgram.cpp */; };
 		DBDF1B612323DE9E007CECB1 /* shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = DBDF1B5C2323DE8D007CECB1 /* shaders */; };
@@ -31,7 +33,9 @@
 			dstSubfolderSpec = 6;
 			files = (
 				BF40487F2CCAAF23009C4979 /* platformPack_tile027.png in CopyFiles */,
+				BF4048952CCAD5C1009C4979 /* platforms.png in CopyFiles */,
 				BF4048782CCAA231009C4979 /* george_0.png in CopyFiles */,
+				BF4048942CCAD5BF009C4979 /* world_tileset.png in CopyFiles */,
 				BF4048792CCAA233009C4979 /* kita.png in CopyFiles */,
 				BF40487D2CCAA8E4009C4979 /* Spaceships.png in CopyFiles */,
 				DBDF1B612323DE9E007CECB1 /* shaders in CopyFiles */,
@@ -53,6 +57,8 @@
 		BF40488F2CCAB5D5009C4979 /* mainlev_build.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainlev_build.png; sourceTree = "<group>"; };
 		BF4048902CCAB5D5009C4979 /* props1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = props1.png; sourceTree = "<group>"; };
 		BF4048912CCAB5D5009C4979 /* props2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = props2.png; sourceTree = "<group>"; };
+		BF4048922CCAD581009C4979 /* platforms.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platforms.png; sourceTree = "<group>"; };
+		BF4048932CCAD581009C4979 /* world_tileset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = world_tileset.png; sourceTree = "<group>"; };
 		DBDF1B4F2323DE3F007CECB1 /* Project3 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Project3; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBDF1B522323DE3F007CECB1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		DBDF1B592323DE8D007CECB1 /* ShaderProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderProgram.h; sourceTree = "<group>"; };
@@ -120,6 +126,8 @@
 				DBDF1B522323DE3F007CECB1 /* main.cpp */,
 				BF4048762CCAA208009C4979 /* george_0.png */,
 				BF4048772CCAA208009C4979 /* kita.png */,
+				BF4048922CCAD581009C4979 /* platforms.png */,
+				BF4048932CCAD581009C4979 /* world_tileset.png */,
 			);
 			path = Project3;
 			sourceTree = "<group>";

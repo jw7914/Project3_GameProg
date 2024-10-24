@@ -78,6 +78,8 @@ public:
     glm::vec3 const get_scale()        const { return m_scale; }
     GLuint    const get_texture_id()   const { return m_texture_id; }
     float     const get_speed()        const { return m_speed; }
+    float     const get_width()        const { return m_width; }
+    float     const get_height()       const { return m_height;}
 
     // ————— SETTERS ————— //
     void const set_position(glm::vec3 new_position)     { m_position = new_position; }
@@ -92,6 +94,8 @@ public:
     void const set_animation_frames(int new_frames)     { m_animation_frames = new_frames; }
     void const set_animation_index(int new_index)       { m_animation_index = new_index; }
     void const set_animation_time(float new_time)       { m_animation_time = new_time; }
+    void const set_width(float new_width)               { m_width = new_width; }
+    void const set_height(float new_height)             { m_height = new_height; }
 
     // Setter for m_walking
     void set_walking(int walking[4][4])
