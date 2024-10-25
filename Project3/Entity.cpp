@@ -138,7 +138,6 @@ int Entity::update(float delta_time, Entity* collidable_entities, int collidable
     for (int i = 0; i < collidable_entity_count; i++)
     {
         if (check_collision(&collidable_entities[i])) {
-            std::cout << i << std::endl;
             if(collidable_entities[i].get_landingStatus()) {
                 return 1;
             }

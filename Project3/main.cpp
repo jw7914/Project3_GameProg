@@ -305,7 +305,7 @@ void initialise()
         GLuint fuel_texture_id = load_texture(curr.c_str());
         g_game_state.others[i] = Entity(fuel_texture_id, 0.0f, 1, 1, 1);
         g_game_state.others[i].set_position(glm::vec3(4.5f, 3.5f, 0.0f));
-        g_game_state.others[i].set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
+        g_game_state.others[i].set_scale(glm::vec3(0.5f, 0.25f, 0.0f));
         g_game_state.others[i].face_right();
         g_game_state.others[i].update(0.0f, nullptr, 0);
     }
@@ -358,15 +358,13 @@ void process_input()
         if (key_state[SDL_SCANCODE_LEFT]){
             if (fuel > 0) {
                 g_game_state.player->move_left();
-                fuel -= 0.35;
-//                LOG(fuel);
+                fuel -= 0.3;
             }
         }
         else if (key_state[SDL_SCANCODE_RIGHT]) {
             if (fuel > 0) {
                 g_game_state.player->move_right();
-                fuel -= 0.35;
-//                LOG(fuel);
+                fuel -= 0.3;
             }
         
         }
@@ -460,7 +458,7 @@ void render()
             GLuint init_health_texture_id = load_texture(INITHEALTH_FILEPATH);
             Entity init_health = Entity(init_health_texture_id, 0.0f, 1, 1, 1);
             init_health.set_position(glm::vec3(4.5f, 3.5f, 0.0f));
-            init_health.set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
+            init_health.set_scale(glm::vec3(0.5f, 0.25f, 0.0f));
             init_health.face_right();
             init_health.update(0.0f, nullptr, 0);
             init_health.render(&g_shader_program);
