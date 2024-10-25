@@ -49,6 +49,7 @@ constexpr char V_SHADER_PATH[] = "shaders/vertex_textured.glsl",
 constexpr float MILLISECONDS_IN_SECOND = 1000.0;
 constexpr char  EXPLOSION_FILEPATH[] = "Explosion.png",
                 ASTEROIDS_FILEPATH[] = "Asteroids.png",
+                FONTSHEET_FILEPATH[]   = "font1.png",
                 PLATFORM_FILEPATH[]    = "world_tileset.png",
                 SPACESHIP_FILEPATH[]   = "Spaceships.png";
 
@@ -60,6 +61,8 @@ constexpr float FIXED_TIMESTEP = 1.0f / 60.0f;
 constexpr float ACC_OF_GRAVITY = -9.81f;
 constexpr int   PLATFORM_COUNT = 20;
 constexpr int   ASTEROID_COUNT = 5;
+constexpr int   OTHER_COUNT = 3;
+
 
 // ————— STRUCTS AND ENUMS —————//
 enum AppStatus { RUNNING, TERMINATED };
@@ -68,7 +71,7 @@ struct GameState
 {
     Entity* player;
     Entity* collidables;
-    Entity* messages;
+    Entity* others;
 };
 
 // ————— VARIABLES ————— //
@@ -84,6 +87,9 @@ float g_previous_ticks   = 0.0f;
 float g_time_accumulator = 0.0f;
 bool isRunning = false;
 float fuel = 100;
+constexpr int FONTBANK_SIZE = 16;
+GLuint g_font_texture_id;
+int gameMessage = 0;
 
 // ———— GENERAL FUNCTIONS ———— //
 GLuint load_texture(const char* filepath);
@@ -125,10 +131,76 @@ GLuint load_texture(const char* filepath)
     return textureID;
 }
 
+void draw_text(ShaderProgram *shader_program, GLuint font_texture_id, std::string text,
+               float font_size, float spacing, glm::vec3 position)
+{
+    // Scale the size of the fontbank in the UV-plane
+    // We will use this for spacing and positioning
+    float width = 1.0f / FONTBANK_SIZE;
+    float height = 1.0f / FONTBANK_SIZE;
+
+    // Instead of having a single pair of arrays, we'll have a series of pairs—one for
+    // each character. Don't forget to include <vector>!
+    std::vector<float> vertices;
+    std::vector<float> texture_coordinates;
+
+    // For every character...
+    for (int i = 0; i < text.size(); i++) {
+        // 1. Get their index in the spritesheet, as well as their offset (i.e. their
+        //    position relative to the whole sentence)
+        int spritesheet_index = (int) text[i];  // ascii value of character
+        float offset = (font_size + spacing) * i;
+
+        // 2. Using the spritesheet index, we can calculate our U- and V-coordinates
+        float u_coordinate = (float) (spritesheet_index % FONTBANK_SIZE) / FONTBANK_SIZE;
+        float v_coordinate = (float) (spritesheet_index / FONTBANK_SIZE) / FONTBANK_SIZE;
+
+        // 3. Inset the current pair in both vectors
+        vertices.insert(vertices.end(), {
+            offset + (-0.5f * font_size), 0.5f * font_size,
+            offset + (-0.5f * font_size), -0.5f * font_size,
+            offset + (0.5f * font_size), 0.5f * font_size,
+            offset + (0.5f * font_size), -0.5f * font_size,
+            offset + (0.5f * font_size), 0.5f * font_size,
+            offset + (-0.5f * font_size), -0.5f * font_size,
+        });
+
+        texture_coordinates.insert(texture_coordinates.end(), {
+            u_coordinate, v_coordinate,
+            u_coordinate, v_coordinate + height,
+            u_coordinate + width, v_coordinate,
+            u_coordinate + width, v_coordinate + height,
+            u_coordinate + width, v_coordinate,
+            u_coordinate, v_coordinate + height,
+        });
+    }
+
+    // 4. And render all of them using the pairs
+    glm::mat4 model_matrix = glm::mat4(1.0f);
+    model_matrix = glm::translate(model_matrix, position);
+
+    shader_program->set_model_matrix(model_matrix);
+    glUseProgram(shader_program->get_program_id());
+
+    glVertexAttribPointer(shader_program->get_position_attribute(), 2, GL_FLOAT, false, 0,
+                          vertices.data());
+    glEnableVertexAttribArray(shader_program->get_position_attribute());
+
+    glVertexAttribPointer(shader_program->get_tex_coordinate_attribute(), 2, GL_FLOAT,
+                          false, 0, texture_coordinates.data());
+    glEnableVertexAttribArray(shader_program->get_tex_coordinate_attribute());
+
+    glBindTexture(GL_TEXTURE_2D, font_texture_id);
+    glDrawArrays(GL_TRIANGLES, 0, (int) (text.size() * 6));
+
+    glDisableVertexAttribArray(shader_program->get_position_attribute());
+    glDisableVertexAttribArray(shader_program->get_tex_coordinate_attribute());
+}
+
 void initialise()
 {
     SDL_Init(SDL_INIT_VIDEO);
-    g_display_window = SDL_CreateWindow("Hello, Entities!",
+    g_display_window = SDL_CreateWindow("Project 3",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         SDL_WINDOW_OPENGL);
@@ -223,7 +295,11 @@ void initialise()
             LOG(i);
             LOG("TRUE");
         }
+        
     }
+    
+    g_game_state.others = new Entity[OTHER_COUNT];
+    
 
 
 
@@ -281,7 +357,11 @@ void process_input()
                 fuel -= 0.35;
 //                LOG(fuel);
             }
-        };
+        
+        }
+        else {
+            g_game_state.player->face_up();
+        }
         
         // This makes sure that the player can't move faster diagonally
         if (glm::length(g_game_state.player->get_movement()) > 1.0f)
@@ -313,14 +393,15 @@ void update()
     {
         // Notice that we're using FIXED_TIMESTEP as our delta time
         if(isRunning){
+            g_font_texture_id = load_texture(FONTSHEET_FILEPATH);
             int gameStatus = g_game_state.player->update(FIXED_TIMESTEP, g_game_state.collidables,
                                                          PLATFORM_COUNT + ASTEROID_COUNT);
             if(gameStatus == 1) {
-                LOG("WIN");
+                gameMessage = 1;
                 isRunning = false;
             }
             else if (gameStatus == 2) {
-                LOG("LOSE");
+                gameMessage = 2;
                 isRunning = false;
             }
             if (g_game_state.player->get_position().x > 5.0f || g_game_state.player->get_position().x < -5.0f || gameStatus == 3) {
@@ -337,7 +418,7 @@ void update()
                 g_game_state.player->set_position(curr_pos);
                 g_game_state.player->update(0.0f, nullptr, 0);
                 isRunning = false;
-                LOG("LOSE");
+                gameMessage = 2;
             }
         }
         delta_time -= FIXED_TIMESTEP;
@@ -357,7 +438,18 @@ void render()
     // ————— PLATFORM ————— //
     for (int i = 0; i < PLATFORM_COUNT + ASTEROID_COUNT; i++)
         g_game_state.collidables[i].render(&g_shader_program);
-
+    
+    if(!isRunning && gameMessage != 0) {
+        if(gameMessage == 1)
+        {
+            draw_text(&g_shader_program, g_font_texture_id, "MISSION SUCCESS", 0.5f, 0.05f,
+                      glm::vec3(-3.5f, 2.5f, 0.0f));
+        }
+        else if(gameMessage == 2) {
+            draw_text(&g_shader_program, g_font_texture_id, "MISSION FAIL", 0.5f, 0.05f,
+                      glm::vec3(-2.5f, 2.5f, 0.0f));
+        }
+    }
     // ————— GENERAL ————— //
     SDL_GL_SwapWindow(g_display_window);
 }
@@ -368,6 +460,7 @@ void shutdown()
     
     delete   g_game_state.player;
     delete[] g_game_state.collidables;
+    delete[] g_game_state.others;
 }
 
 
