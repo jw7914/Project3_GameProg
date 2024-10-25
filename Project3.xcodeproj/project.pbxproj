@@ -14,6 +14,9 @@
 		BF4048942CCAD5BF009C4979 /* world_tileset.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048932CCAD581009C4979 /* world_tileset.png */; };
 		BF4048952CCAD5C1009C4979 /* platforms.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048922CCAD581009C4979 /* platforms.png */; };
 		BF40489B2CCB502F009C4979 /* Explosion-duplicate frames.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF40489A2CCB4EFE009C4979 /* Explosion-duplicate frames.png */; };
+		BF40489D2CCB526C009C4979 /* Explosion.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF40489C2CCB523B009C4979 /* Explosion.png */; };
+		BF40489F2CCB572D009C4979 /* Asteroids.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF40489E2CCB566E009C4979 /* Asteroids.png */; };
+		BF4048A12CCB5B6E009C4979 /* Asteroids_Foreground.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048A02CCB5B6A009C4979 /* Asteroids_Foreground.png */; };
 		DBDF1B532323DE3F007CECB1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DBDF1B522323DE3F007CECB1 /* main.cpp */; };
 		DBDF1B5E2323DE8D007CECB1 /* ShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DBDF1B5D2323DE8D007CECB1 /* ShaderProgram.cpp */; };
 		DBDF1B612323DE9E007CECB1 /* shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = DBDF1B5C2323DE8D007CECB1 /* shaders */; };
@@ -32,6 +35,9 @@
 			dstSubfolderSpec = 6;
 			files = (
 				BF4048952CCAD5C1009C4979 /* platforms.png in CopyFiles */,
+				BF4048A12CCB5B6E009C4979 /* Asteroids_Foreground.png in CopyFiles */,
+				BF40489F2CCB572D009C4979 /* Asteroids.png in CopyFiles */,
+				BF40489D2CCB526C009C4979 /* Explosion.png in CopyFiles */,
 				BF4048782CCAA231009C4979 /* george_0.png in CopyFiles */,
 				BF4048942CCAD5BF009C4979 /* world_tileset.png in CopyFiles */,
 				BF40489B2CCB502F009C4979 /* Explosion-duplicate frames.png in CopyFiles */,
@@ -55,6 +61,9 @@
 		BF4048982CCB4E22009C4979 /* Fuel_Bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Fuel_Bar.png; sourceTree = "<group>"; };
 		BF4048992CCB4E34009C4979 /* Thruster_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Thruster_01.png; sourceTree = "<group>"; };
 		BF40489A2CCB4EFE009C4979 /* Explosion-duplicate frames.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Explosion-duplicate frames.png"; sourceTree = "<group>"; };
+		BF40489C2CCB523B009C4979 /* Explosion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Explosion.png; sourceTree = "<group>"; };
+		BF40489E2CCB566E009C4979 /* Asteroids.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Asteroids.png; sourceTree = "<group>"; };
+		BF4048A02CCB5B6A009C4979 /* Asteroids_Foreground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Asteroids_Foreground.png; sourceTree = "<group>"; };
 		DBDF1B4F2323DE3F007CECB1 /* Project3 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Project3; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBDF1B522323DE3F007CECB1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		DBDF1B592323DE8D007CECB1 /* ShaderProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderProgram.h; sourceTree = "<group>"; };
@@ -110,6 +119,8 @@
 		DBDF1B512323DE3F007CECB1 /* Project3 */ = {
 			isa = PBXGroup;
 			children = (
+				BF4048A02CCB5B6A009C4979 /* Asteroids_Foreground.png */,
+				BF40489E2CCB566E009C4979 /* Asteroids.png */,
 				BF40489A2CCB4EFE009C4979 /* Explosion-duplicate frames.png */,
 				BF4048992CCB4E34009C4979 /* Thruster_01.png */,
 				BF4048982CCB4E22009C4979 /* Fuel_Bar.png */,
@@ -127,6 +138,7 @@
 				BF4048772CCAA208009C4979 /* kita.png */,
 				BF4048922CCAD581009C4979 /* platforms.png */,
 				BF4048932CCAD581009C4979 /* world_tileset.png */,
+				BF40489C2CCB523B009C4979 /* Explosion.png */,
 			);
 			path = Project3;
 			sourceTree = "<group>";

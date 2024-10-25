@@ -133,18 +133,20 @@ bool const Entity::check_collision(Entity* other) const
     return x_distance < 0.0f && y_distance < 0.0f;
 }
 
-void Entity::update(float delta_time, Entity* collidable_entities, int collidable_entity_count)
+int Entity::update(float delta_time, Entity* collidable_entities, int collidable_entity_count)
 {
     for (int i = 0; i < collidable_entity_count; i++)
     {
         if (check_collision(&collidable_entities[i])) {
             if(collidable_entities[i].get_landingStatus()) {
-                std::cout << "WIN" << std::endl;
+                return 1;
+            }
+            else if (i < 20) {
+                return 2;
             }
             else {
-                std::cout << "LOSE" << std::endl;
+                return 3;
             }
-            return;
         };
     }
 
@@ -216,13 +218,14 @@ void Entity::update(float delta_time, Entity* collidable_entities, int collidabl
         m_model_matrix = glm::rotate(m_model_matrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     }
     m_model_matrix = glm::scale(m_model_matrix, m_scale);
+    return 0;
 }
 
 void Entity::render(ShaderProgram *program)
 {
     program->set_model_matrix(m_model_matrix);
     
-    if (m_animation_indices == NULL && m_animation_cols != 0 && m_animation_rows != 0) {
+    if (m_animation_indices == NULL && (m_animation_cols != 0 || m_animation_rows != 0)) {
         draw_sprite_from_texture_atlas(program, m_texture_id, m_animation_index);
         return;
     }

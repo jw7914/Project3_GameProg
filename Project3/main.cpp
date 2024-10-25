@@ -47,7 +47,8 @@ constexpr char V_SHADER_PATH[] = "shaders/vertex_textured.glsl",
                F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
 
 constexpr float MILLISECONDS_IN_SECOND = 1000.0;
-constexpr char  EXPLOSION_FILEPATH[] = "Explosion-duplicate frames.png",
+constexpr char  EXPLOSION_FILEPATH[] = "Explosion.png",
+                ASTEROIDS_FILEPATH[] = "Asteroids.png",
                 PLATFORM_FILEPATH[]    = "world_tileset.png",
                 SPACESHIP_FILEPATH[]   = "Spaceships.png";
 
@@ -58,6 +59,7 @@ constexpr GLint TEXTURE_BORDER     = 0;
 constexpr float FIXED_TIMESTEP = 1.0f / 60.0f;
 constexpr float ACC_OF_GRAVITY = -9.81f;
 constexpr int   PLATFORM_COUNT = 20;
+constexpr int   ASTEROID_COUNT = 5;
 
 // ————— STRUCTS AND ENUMS —————//
 enum AppStatus { RUNNING, TERMINATED };
@@ -65,8 +67,8 @@ enum AppStatus { RUNNING, TERMINATED };
 struct GameState
 {
     Entity* player;
-    Entity* platforms;
-    Entity* others;
+    Entity* collidables;
+    Entity* messages;
 };
 
 // ————— VARIABLES ————— //
@@ -81,7 +83,7 @@ glm::mat4 g_view_matrix, g_projection_matrix;
 float g_previous_ticks   = 0.0f;
 float g_time_accumulator = 0.0f;
 bool isRunning = false;
-int fuel = 100;
+float fuel = 100;
 
 // ———— GENERAL FUNCTIONS ———— //
 GLuint load_texture(const char* filepath);
@@ -175,30 +177,47 @@ void initialise()
     g_game_state.player->update(0.0f, nullptr, 0);
 
     // ————— PLATFORM ————— //
-    g_game_state.platforms = new Entity[PLATFORM_COUNT];
+    // Allocate memory for collidables
+    g_game_state.collidables = new Entity[PLATFORM_COUNT + ASTEROID_COUNT];
+    
 
+    // Seed the random number generator
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-    int randomInt = std::rand() % PLATFORM_COUNT;
-    for (int i = 0; i < PLATFORM_COUNT; i++)
-    {
+
+    // Load textures only once
     GLuint platform_texture_id = load_texture(PLATFORM_FILEPATH);
+    GLuint asteroid_texture_id = load_texture(ASTEROIDS_FILEPATH);
 
-    if (i == randomInt) {
-        g_game_state.platforms[i] = Entity(platform_texture_id, 0.0f, 0, 16, 16);
-        g_game_state.platforms[i].set_landingStatus(true);
-    }
-    else {
-        g_game_state.platforms[i] = Entity(platform_texture_id, 0.0f, 5, 16, 16);
-        g_game_state.platforms[i].set_landingStatus(false);
+    // Generate a random index for a special platform
+    int randomInt = std::rand() % PLATFORM_COUNT;
+
+    for (int i = 0; i < PLATFORM_COUNT + ASTEROID_COUNT; i++) {
+        if (i < PLATFORM_COUNT){
+            if (i == randomInt) {
+                g_game_state.collidables[i] = Entity(platform_texture_id, 0.0f, 0, 16, 16);
+                g_game_state.collidables[i].set_landingStatus(true);  // Special landing platform
+            } else {
+                g_game_state.collidables[i] = Entity(platform_texture_id, 0.0f, 5, 16, 16);
+                g_game_state.collidables[i].set_landingStatus(false); // Regular platform
+            }
+            
+            g_game_state.collidables[i].face_right();
+            g_game_state.collidables[i].set_position(glm::vec3(-4.75f + (i * 0.5f), -3.5f, 0.0f));
+            g_game_state.collidables[i].update(0.0f, nullptr, 0);
+        }
+        else {
+            float randomX = -4.0f + static_cast<float>(std::rand()) / (static_cast<float>(RAND_MAX / 8.0f)); // Range -4.0 to 4.0
+            float randomY = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) * 3.0f - 1.0f; // Range -1.0 to 2.0
+            g_game_state.collidables[i] = Entity(asteroid_texture_id, 0.0f, 0, 4, 1);
+            g_game_state.collidables[i].set_position(glm::vec3(randomX, randomY, 0.0f));
+            g_game_state.collidables[i].set_landingStatus(false);
+        }
+        g_game_state.collidables[i].set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
+        g_game_state.collidables[i].set_width(g_game_state.collidables[i].get_width() * 0.5f);
+        g_game_state.collidables[i].set_height(g_game_state.collidables[i].get_height() * 0.5f);
+        g_game_state.collidables[i].update(0.0f, nullptr, 0);
     }
 
-    g_game_state.platforms[i].face_right();
-    g_game_state.platforms[i].set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
-    g_game_state.platforms[i].set_width(g_game_state.platforms[i].get_width() * 0.5f);
-    g_game_state.platforms[i].set_height(g_game_state.platforms[i].get_height() * 0.5f);
-    g_game_state.platforms[i].set_position(glm::vec3(-4.75f + (i * 0.5f), -3.5f, 0.0f));
-    g_game_state.platforms[i].update(0.0f, nullptr, 0);
-}
 
 
     // ————— GENERAL ————— //
@@ -242,8 +261,20 @@ void process_input()
     const Uint8* key_state = SDL_GetKeyboardState(NULL);
     
     if (isRunning) {
-        if (key_state[SDL_SCANCODE_LEFT])       g_game_state.player->move_left();
-        else if (key_state[SDL_SCANCODE_RIGHT]) g_game_state.player->move_right();
+        if (key_state[SDL_SCANCODE_LEFT]){
+            if (fuel > 0) {
+                g_game_state.player->move_left();
+                fuel -= 0.35;
+                LOG(fuel);
+            }
+        }
+        else if (key_state[SDL_SCANCODE_RIGHT]) {
+            if (fuel > 0) {
+                g_game_state.player->move_right();
+                fuel -= 0.35;
+                LOG(fuel);
+            }
+        };
         
         // This makes sure that the player can't move faster diagonally
         if (glm::length(g_game_state.player->get_movement()) > 1.0f)
@@ -275,9 +306,17 @@ void update()
     {
         // Notice that we're using FIXED_TIMESTEP as our delta time
         if(isRunning){
-            g_game_state.player->update(FIXED_TIMESTEP, g_game_state.platforms,
-                                        PLATFORM_COUNT);
-            if (g_game_state.player->get_position().x > 5.0f || g_game_state.player->get_position().x < -5.0f) {
+            int gameStatus = g_game_state.player->update(FIXED_TIMESTEP, g_game_state.collidables,
+                                                         PLATFORM_COUNT + ASTEROID_COUNT);
+            if(gameStatus == 1) {
+                LOG("WIN");
+                isRunning = false;
+            }
+            else if (gameStatus == 2) {
+                LOG("LOSE");
+                isRunning = false;
+            }
+            if (g_game_state.player->get_position().x > 5.0f || g_game_state.player->get_position().x < -5.0f || gameStatus == 3) {
                 glm::vec3 curr_pos = g_game_state.player->get_position();
                 GLuint explosion_texture_id = load_texture(EXPLOSION_FILEPATH);
                 g_game_state.player = nullptr;
@@ -285,12 +324,13 @@ void update()
                      explosion_texture_id,
                      0.0f,
                      1,
-                     14,
+                     8,
                      1
                 );
                 g_game_state.player->set_position(curr_pos);
                 g_game_state.player->update(0.0f, nullptr, 0);
                 isRunning = false;
+                LOG("LOSE");
             }
         }
         delta_time -= FIXED_TIMESTEP;
@@ -308,8 +348,8 @@ void render()
     g_game_state.player->render(&g_shader_program);
 
     // ————— PLATFORM ————— //
-    for (int i = 0; i < PLATFORM_COUNT; i++)
-        g_game_state.platforms[i].render(&g_shader_program);
+    for (int i = 0; i < PLATFORM_COUNT + ASTEROID_COUNT; i++)
+        g_game_state.collidables[i].render(&g_shader_program);
 
     // ————— GENERAL ————— //
     SDL_GL_SwapWindow(g_display_window);
@@ -320,7 +360,7 @@ void shutdown()
     SDL_Quit();
     
     delete   g_game_state.player;
-    delete[] g_game_state.platforms;
+    delete[] g_game_state.collidables;
 }
 
 
