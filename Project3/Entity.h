@@ -5,6 +5,7 @@
 #include "ShaderProgram.h"
 
 enum AnimationDirection { LEFT, RIGHT, UP, DOWN };
+enum AnimationType { ANIMATED, NONANIMATED };
 
 class Entity
 {

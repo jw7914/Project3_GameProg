@@ -28,6 +28,7 @@
 #include <cstdlib>  // For rand() and srand()
 #include <vector>
 #include "Entity.h"
+#include <string.h>
 
 // ————— CONSTANTS ————— //
 constexpr int WINDOW_WIDTH  = 640 * 2,
@@ -61,7 +62,6 @@ constexpr float FIXED_TIMESTEP = 1.0f / 60.0f;
 constexpr float ACC_OF_GRAVITY = -9.81f;
 constexpr int   PLATFORM_COUNT = 20;
 constexpr int   ASTEROID_COUNT = 5;
-constexpr int   OTHER_COUNT = 3;
 
 
 // ————— STRUCTS AND ENUMS —————//
@@ -90,6 +90,7 @@ float fuel = 100;
 constexpr int FONTBANK_SIZE = 16;
 GLuint g_font_texture_id;
 int gameMessage = 0;
+int gameStat = 0;
 
 // ———— GENERAL FUNCTIONS ———— //
 GLuint load_texture(const char* filepath);
@@ -249,7 +250,7 @@ void initialise()
     g_game_state.player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY * 0.005, 0.0f));
     g_game_state.player->update(0.0f, nullptr, 0);
 
-    // ————— PLATFORM ————— //
+    // ————— COLLIDABLES ————— //
     // Allocate memory for collidables
     g_game_state.collidables = new Entity[PLATFORM_COUNT + ASTEROID_COUNT];
     
@@ -290,15 +291,25 @@ void initialise()
         g_game_state.collidables[i].set_width(g_game_state.collidables[i].get_width() * 0.1f);
         g_game_state.collidables[i].set_height(g_game_state.collidables[i].get_height() * 0.1f);
         g_game_state.collidables[i].update(0.0f, nullptr, 0);
-        
-        if  (g_game_state.collidables[i].get_landingStatus()){
-            LOG(i);
-            LOG("TRUE");
-        }
-        
     }
     
-    g_game_state.others = new Entity[OTHER_COUNT];
+    
+    // ————— OTHERS ————— //
+    std::string first = "health_0";
+    std::string ext = ".png";
+    
+    g_game_state.others = new Entity[10];
+    for (int i = 0; i < 10; i++)
+    {
+        std::string curr = first + std::to_string(i) + ext;
+        GLuint fuel_texture_id = load_texture(curr.c_str());
+        g_game_state.others[i] = Entity(fuel_texture_id, 0.0f, 1, 1, 1);
+        g_game_state.others[i].set_position(glm::vec3(4.5f, 3.5f, 0.0f));
+        g_game_state.others[i].set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
+        g_game_state.others[i].face_right();
+        g_game_state.others[i].update(0.0f, nullptr, 0);
+    }
+
     
 
 
@@ -329,7 +340,7 @@ void process_input()
                 // Quit the game with a keystroke
                 g_app_status = TERMINATED;
                 break;
-            case SDLK_t:
+            case SDLK_SPACE:
                 isRunning = true;
 
             default:
@@ -398,10 +409,12 @@ void update()
                                                          PLATFORM_COUNT + ASTEROID_COUNT);
             if(gameStatus == 1) {
                 gameMessage = 1;
+                gameStat = 1;
                 isRunning = false;
             }
             else if (gameStatus == 2) {
                 gameMessage = 2;
+                gameStat = 2;
                 isRunning = false;
             }
             if (g_game_state.player->get_position().x > 5.0f || g_game_state.player->get_position().x < -5.0f || gameStatus == 3) {
@@ -419,6 +432,7 @@ void update()
                 g_game_state.player->update(0.0f, nullptr, 0);
                 isRunning = false;
                 gameMessage = 2;
+                gameStat = 3;
             }
         }
         delta_time -= FIXED_TIMESTEP;
@@ -435,9 +449,32 @@ void render()
     // ————— PLAYER ————— //
     g_game_state.player->render(&g_shader_program);
 
-    // ————— PLATFORM ————— //
+    // ————— COLLIDABLES ————— //
     for (int i = 0; i < PLATFORM_COUNT + ASTEROID_COUNT; i++)
         g_game_state.collidables[i].render(&g_shader_program);
+    
+    // ————— OTHERS ————— //
+    if (!isRunning) {
+        if(gameStat != 1 && gameStat != 2 && gameStat != 3) {
+            char INITHEALTH_FILEPATH[]   = "health_10.png";
+            GLuint init_health_texture_id = load_texture(INITHEALTH_FILEPATH);
+            Entity init_health = Entity(init_health_texture_id, 0.0f, 1, 1, 1);
+            init_health.set_position(glm::vec3(4.5f, 3.5f, 0.0f));
+            init_health.set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
+            init_health.face_right();
+            init_health.update(0.0f, nullptr, 0);
+            init_health.render(&g_shader_program);
+        }
+    }
+    else {
+        if (static_cast<int>(std::round(fuel / 10.0f) == 0)) {
+            g_game_state.others[static_cast<int>(std::round(fuel / 10.0f))].render(&g_shader_program);
+        }
+        else {
+            g_game_state.others[static_cast<int>(std::round(fuel / 10.0f)) - 1].render(&g_shader_program);
+        }
+    }
+    
     
     if(!isRunning && gameMessage != 0) {
         if(gameMessage == 1)
