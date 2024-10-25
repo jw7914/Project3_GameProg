@@ -25,6 +25,7 @@
 #include "stb_image.h"
 #include "cmath"
 #include <ctime>
+#include <cstdlib>  // For rand() and srand()
 #include <vector>
 #include "Entity.h"
 
@@ -46,7 +47,7 @@ constexpr char V_SHADER_PATH[] = "shaders/vertex_textured.glsl",
                F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
 
 constexpr float MILLISECONDS_IN_SECOND = 1000.0;
-constexpr char  SPRITESHEET_FILEPATH[] = "george_0.png",
+constexpr char  EXPLOSION_FILEPATH[] = "Explosion-duplicate frames.png",
                 PLATFORM_FILEPATH[]    = "world_tileset.png",
                 SPACESHIP_FILEPATH[]   = "Spaceships.png";
 
@@ -65,6 +66,7 @@ struct GameState
 {
     Entity* player;
     Entity* platforms;
+    Entity* others;
 };
 
 // ————— VARIABLES ————— //
@@ -78,6 +80,8 @@ glm::mat4 g_view_matrix, g_projection_matrix;
 
 float g_previous_ticks   = 0.0f;
 float g_time_accumulator = 0.0f;
+bool isRunning = false;
+int fuel = 100;
 
 // ———— GENERAL FUNCTIONS ———— //
 GLuint load_texture(const char* filepath);
@@ -156,7 +160,6 @@ void initialise()
 
     // ————— PLAYER ————— //
     GLuint player_texture_id = load_texture(SPACESHIP_FILEPATH);
-    
 
     g_game_state.player = new Entity(
         player_texture_id,         // texture id
@@ -169,25 +172,34 @@ void initialise()
     g_game_state.player->face_up();
     g_game_state.player->set_position(glm::vec3(0.0f, 2.9f, 0.0f)); // Start at top of screen
     g_game_state.player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY * 0.005, 0.0f));
+    g_game_state.player->update(0.0f, nullptr, 0);
 
     // ————— PLATFORM ————— //
     g_game_state.platforms = new Entity[PLATFORM_COUNT];
 
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    int randomInt = std::rand() % PLATFORM_COUNT;
     for (int i = 0; i < PLATFORM_COUNT; i++)
     {
-        GLuint platform_texture_id = load_texture(PLATFORM_FILEPATH);
-        if (i == 3) {
-            g_game_state.platforms[i] = Entity(platform_texture_id, 0.0f, 37, 16, 16);
-        }
-        else {
-            g_game_state.platforms[i] = Entity(platform_texture_id, 0.0f, 5, 16, 16);
-        }
-        g_game_state.platforms[i].set_scale(glm::vec3(0.5,0.5f,0.0f));
-        g_game_state.platforms[i].set_width(g_game_state.platforms[i].get_width() * 0.5f);
-        g_game_state.platforms[i].set_height(g_game_state.platforms[i].get_height() * 0.5f);
-        g_game_state.platforms[i].set_position(glm::vec3(-4.75f + (i*0.5), -3.5f, 0.0f));
-        g_game_state.platforms[i].update(0.0f, nullptr, 0);
+    GLuint platform_texture_id = load_texture(PLATFORM_FILEPATH);
+
+    if (i == randomInt) {
+        g_game_state.platforms[i] = Entity(platform_texture_id, 0.0f, 0, 16, 16);
+        g_game_state.platforms[i].set_landingStatus(true);
     }
+    else {
+        g_game_state.platforms[i] = Entity(platform_texture_id, 0.0f, 5, 16, 16);
+        g_game_state.platforms[i].set_landingStatus(false);
+    }
+
+    g_game_state.platforms[i].face_right();
+    g_game_state.platforms[i].set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
+    g_game_state.platforms[i].set_width(g_game_state.platforms[i].get_width() * 0.5f);
+    g_game_state.platforms[i].set_height(g_game_state.platforms[i].get_height() * 0.5f);
+    g_game_state.platforms[i].set_position(glm::vec3(-4.75f + (i * 0.5f), -3.5f, 0.0f));
+    g_game_state.platforms[i].update(0.0f, nullptr, 0);
+}
+
 
     // ————— GENERAL ————— //
     glEnable(GL_BLEND);
@@ -215,6 +227,8 @@ void process_input()
                 // Quit the game with a keystroke
                 g_app_status = TERMINATED;
                 break;
+            case SDLK_t:
+                isRunning = true;
 
             default:
                 break;
@@ -226,16 +240,15 @@ void process_input()
     }
 
     const Uint8* key_state = SDL_GetKeyboardState(NULL);
-
-    if (key_state[SDL_SCANCODE_LEFT])       g_game_state.player->move_left();
-    else if (key_state[SDL_SCANCODE_RIGHT]) g_game_state.player->move_right();
     
-    if(key_state[SDL_SCANCODE_UP]) g_game_state.player->move_up();
-    else if (key_state[SDL_SCANCODE_DOWN]) g_game_state.player->move_down();
-
-    // This makes sure that the player can't move faster diagonally
-    if (glm::length(g_game_state.player->get_movement()) > 1.0f)
-        g_game_state.player->normalise_movement();
+    if (isRunning) {
+        if (key_state[SDL_SCANCODE_LEFT])       g_game_state.player->move_left();
+        else if (key_state[SDL_SCANCODE_RIGHT]) g_game_state.player->move_right();
+        
+        // This makes sure that the player can't move faster diagonally
+        if (glm::length(g_game_state.player->get_movement()) > 1.0f)
+            g_game_state.player->normalise_movement();
+    }
 }
 
 void update()
@@ -261,8 +274,25 @@ void update()
     while (delta_time >= FIXED_TIMESTEP)
     {
         // Notice that we're using FIXED_TIMESTEP as our delta time
-        g_game_state.player->update(FIXED_TIMESTEP, g_game_state.platforms,
-                                    PLATFORM_COUNT);
+        if(isRunning){
+            g_game_state.player->update(FIXED_TIMESTEP, g_game_state.platforms,
+                                        PLATFORM_COUNT);
+            if (g_game_state.player->get_position().x > 5.0f || g_game_state.player->get_position().x < -5.0f) {
+                glm::vec3 curr_pos = g_game_state.player->get_position();
+                GLuint explosion_texture_id = load_texture(EXPLOSION_FILEPATH);
+                g_game_state.player = nullptr;
+                g_game_state.player = new Entity(
+                     explosion_texture_id,
+                     0.0f,
+                     1,
+                     14,
+                     1
+                );
+                g_game_state.player->set_position(curr_pos);
+                g_game_state.player->update(0.0f, nullptr, 0);
+                isRunning = false;
+            }
+        }
         delta_time -= FIXED_TIMESTEP;
     }
 

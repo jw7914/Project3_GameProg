@@ -7,14 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		842DC6772CA644DF0052A9C3 /* shield.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 842DC6762CA644D20052A9C3 /* shield.png */; };
 		BF2BF6C42CC0961B00614181 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF2BF6C32CC0961B00614181 /* Entity.cpp */; };
 		BF4048782CCAA231009C4979 /* george_0.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048762CCAA208009C4979 /* george_0.png */; };
 		BF4048792CCAA233009C4979 /* kita.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048772CCAA208009C4979 /* kita.png */; };
 		BF40487D2CCAA8E4009C4979 /* Spaceships.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF40487C2CCAA6D0009C4979 /* Spaceships.png */; };
-		BF40487F2CCAAF23009C4979 /* platformPack_tile027.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF40487E2CCAAF12009C4979 /* platformPack_tile027.png */; };
 		BF4048942CCAD5BF009C4979 /* world_tileset.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048932CCAD581009C4979 /* world_tileset.png */; };
 		BF4048952CCAD5C1009C4979 /* platforms.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF4048922CCAD581009C4979 /* platforms.png */; };
+		BF40489B2CCB502F009C4979 /* Explosion-duplicate frames.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF40489A2CCB4EFE009C4979 /* Explosion-duplicate frames.png */; };
 		DBDF1B532323DE3F007CECB1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DBDF1B522323DE3F007CECB1 /* main.cpp */; };
 		DBDF1B5E2323DE8D007CECB1 /* ShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DBDF1B5D2323DE8D007CECB1 /* ShaderProgram.cpp */; };
 		DBDF1B612323DE9E007CECB1 /* shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = DBDF1B5C2323DE8D007CECB1 /* shaders */; };
@@ -32,33 +31,30 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				BF40487F2CCAAF23009C4979 /* platformPack_tile027.png in CopyFiles */,
 				BF4048952CCAD5C1009C4979 /* platforms.png in CopyFiles */,
 				BF4048782CCAA231009C4979 /* george_0.png in CopyFiles */,
 				BF4048942CCAD5BF009C4979 /* world_tileset.png in CopyFiles */,
+				BF40489B2CCB502F009C4979 /* Explosion-duplicate frames.png in CopyFiles */,
 				BF4048792CCAA233009C4979 /* kita.png in CopyFiles */,
 				BF40487D2CCAA8E4009C4979 /* Spaceships.png in CopyFiles */,
 				DBDF1B612323DE9E007CECB1 /* shaders in CopyFiles */,
-				842DC6772CA644DF0052A9C3 /* shield.png in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		842DC6762CA644D20052A9C3 /* shield.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shield.png; sourceTree = "<group>"; };
 		BF2BF6C22CC0961B00614181 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
 		BF2BF6C32CC0961B00614181 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		BF4048762CCAA208009C4979 /* george_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = george_0.png; sourceTree = "<group>"; };
 		BF4048772CCAA208009C4979 /* kita.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kita.png; sourceTree = "<group>"; };
 		BF40487C2CCAA6D0009C4979 /* Spaceships.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Spaceships.png; sourceTree = "<group>"; };
-		BF40487E2CCAAF12009C4979 /* platformPack_tile027.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platformPack_tile027.png; sourceTree = "<group>"; };
 		BF4048842CCAB374009C4979 /* Project3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Project3.xcodeproj; sourceTree = SOURCE_ROOT; };
-		BF40488F2CCAB5D5009C4979 /* mainlev_build.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainlev_build.png; sourceTree = "<group>"; };
-		BF4048902CCAB5D5009C4979 /* props1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = props1.png; sourceTree = "<group>"; };
-		BF4048912CCAB5D5009C4979 /* props2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = props2.png; sourceTree = "<group>"; };
 		BF4048922CCAD581009C4979 /* platforms.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platforms.png; sourceTree = "<group>"; };
 		BF4048932CCAD581009C4979 /* world_tileset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = world_tileset.png; sourceTree = "<group>"; };
+		BF4048982CCB4E22009C4979 /* Fuel_Bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Fuel_Bar.png; sourceTree = "<group>"; };
+		BF4048992CCB4E34009C4979 /* Thruster_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Thruster_01.png; sourceTree = "<group>"; };
+		BF40489A2CCB4EFE009C4979 /* Explosion-duplicate frames.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Explosion-duplicate frames.png"; sourceTree = "<group>"; };
 		DBDF1B4F2323DE3F007CECB1 /* Project3 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Project3; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBDF1B522323DE3F007CECB1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		DBDF1B592323DE8D007CECB1 /* ShaderProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderProgram.h; sourceTree = "<group>"; };
@@ -89,6 +85,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF4048962CCB2898009C4979 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DBDF1B462323DE3F007CECB1 = {
 			isa = PBXGroup;
 			children = (
@@ -109,15 +110,13 @@
 		DBDF1B512323DE3F007CECB1 /* Project3 */ = {
 			isa = PBXGroup;
 			children = (
-				BF40488F2CCAB5D5009C4979 /* mainlev_build.png */,
-				BF4048902CCAB5D5009C4979 /* props1.png */,
-				BF4048912CCAB5D5009C4979 /* props2.png */,
+				BF40489A2CCB4EFE009C4979 /* Explosion-duplicate frames.png */,
+				BF4048992CCB4E34009C4979 /* Thruster_01.png */,
+				BF4048982CCB4E22009C4979 /* Fuel_Bar.png */,
 				BF4048842CCAB374009C4979 /* Project3.xcodeproj */,
-				BF40487E2CCAAF12009C4979 /* platformPack_tile027.png */,
 				BF40487C2CCAA6D0009C4979 /* Spaceships.png */,
 				BF2BF6C22CC0961B00614181 /* Entity.h */,
 				BF2BF6C32CC0961B00614181 /* Entity.cpp */,
-				842DC6762CA644D20052A9C3 /* shield.png */,
 				DBDF1B5B2323DE8D007CECB1 /* glm */,
 				DBDF1B5D2323DE8D007CECB1 /* ShaderProgram.cpp */,
 				DBDF1B592323DE8D007CECB1 /* ShaderProgram.h */,
@@ -188,6 +187,12 @@
 			mainGroup = DBDF1B462323DE3F007CECB1;
 			productRefGroup = DBDF1B502323DE3F007CECB1 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BF4048962CCB2898009C4979 /* Products */;
+					ProjectRef = BF4048842CCAB374009C4979 /* Project3.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				DBDF1B4E2323DE3F007CECB1 /* Project3 */,

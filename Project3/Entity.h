@@ -21,6 +21,7 @@ private:
     glm::mat4 m_model_matrix;
     
     float     m_speed;
+    bool      landingSpot;
 
     // ————— TEXTURES ————— //
     GLuint    m_texture_id;
@@ -31,6 +32,7 @@ private:
         m_animation_index,
         m_animation_rows,
         m_rotate_state;
+    
     
     int  *m_animation_indices = nullptr;
     float m_animation_time    = 0.0f;
@@ -47,7 +49,7 @@ public:
     Entity(GLuint texture_id, float speed, int walking[4][4], float animation_time,
            int animation_frames, int animation_index, int animation_cols,
            int animation_rows);
-    Entity(GLuint texture_id, float speed); // Simpler constructor
+    Entity(GLuint texture_id, float speed, bool landingSpot); // Simpler constructor
     Entity(GLuint texture_id, float speed, int m_animation_index, int animation_cols, int animation_rows); // Simple using only static sprite form sprite sheet
     ~Entity();
 
@@ -80,6 +82,7 @@ public:
     float     const get_speed()        const { return m_speed; }
     float     const get_width()        const { return m_width; }
     float     const get_height()       const { return m_height;}
+    bool      const get_landingStatus() const { return landingSpot;}
 
     // ————— SETTERS ————— //
     void const set_position(glm::vec3 new_position)     { m_position = new_position; }
@@ -96,6 +99,7 @@ public:
     void const set_animation_time(float new_time)       { m_animation_time = new_time; }
     void const set_width(float new_width)               { m_width = new_width; }
     void const set_height(float new_height)             { m_height = new_height; }
+    void const set_landingStatus(bool status)           { landingSpot = status; }
 
     // Setter for m_walking
     void set_walking(int walking[4][4])

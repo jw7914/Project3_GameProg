@@ -26,11 +26,11 @@ Entity::Entity()
 }
 
 // Simpler constructor for partial initialization
-Entity::Entity(GLuint texture_id, float speed)
+Entity::Entity(GLuint texture_id, float speed, bool landingSpot)
     : m_position(0.0f), m_movement(0.0f), m_scale(1.0f, 1.0f, 0.0f), m_model_matrix(1.0f),
       m_speed(speed), m_animation_cols(0), m_animation_frames(0), m_animation_index(0),
       m_animation_rows(0), m_animation_indices(nullptr), m_animation_time(0.0f),
-      m_texture_id(texture_id), m_velocity(0.0f), m_acceleration(0.0f)
+      m_texture_id(texture_id), m_velocity(0.0f), m_acceleration(0.0f), landingSpot(landingSpot)
 {
     // Initialize m_walking with zeros or any default value
     for (int i = 0; i < SECONDS_PER_FRAME; ++i)
@@ -137,7 +137,15 @@ void Entity::update(float delta_time, Entity* collidable_entities, int collidabl
 {
     for (int i = 0; i < collidable_entity_count; i++)
     {
-        if (check_collision(&collidable_entities[i])) return;
+        if (check_collision(&collidable_entities[i])) {
+            if(collidable_entities[i].get_landingStatus()) {
+                std::cout << "WIN" << std::endl;
+            }
+            else {
+                std::cout << "LOSE" << std::endl;
+            }
+            return;
+        };
     }
 
     if (m_animation_indices != NULL)
@@ -160,9 +168,6 @@ void Entity::update(float delta_time, Entity* collidable_entities, int collidabl
         }
     }
     
-    // Our character moves from left to right, so they need an initial velocity;
-    // And we add the gravity next
-    std::cout << m_acceleration.x << std::endl;
     // Decelerate acceleration towards 0
     if (m_acceleration.x > 0) {
         m_acceleration.x -= 0.15;
@@ -193,7 +198,6 @@ void Entity::update(float delta_time, Entity* collidable_entities, int collidabl
         }
     }
 
-    std::cout << "Velocity: " << m_velocity.x << std::endl;
     m_velocity += m_acceleration * delta_time;
     m_position += m_velocity * delta_time;
     
