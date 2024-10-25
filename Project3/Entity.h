@@ -37,8 +37,8 @@ private:
     int  *m_animation_indices = nullptr;
     float m_animation_time    = 0.0f;
 
-    int m_width  = 1,
-        m_height = 1;
+    float m_width  = 1.0f,
+          m_height = 1.0f;
 
 public:
     // ————— STATIC VARIABLES ————— //

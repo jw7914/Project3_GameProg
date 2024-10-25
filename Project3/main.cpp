@@ -173,6 +173,7 @@ void initialise()
 
     g_game_state.player->face_up();
     g_game_state.player->set_position(glm::vec3(0.0f, 2.9f, 0.0f)); // Start at top of screen
+    g_game_state.player->set_width(g_game_state.player->get_width() * 0.5f);
     g_game_state.player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY * 0.005, 0.0f));
     g_game_state.player->update(0.0f, nullptr, 0);
 
@@ -213,9 +214,15 @@ void initialise()
             g_game_state.collidables[i].set_landingStatus(false);
         }
         g_game_state.collidables[i].set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
-        g_game_state.collidables[i].set_width(g_game_state.collidables[i].get_width() * 0.5f);
-        g_game_state.collidables[i].set_height(g_game_state.collidables[i].get_height() * 0.5f);
+        //Drag the height and width closer to rendered entity
+        g_game_state.collidables[i].set_width(g_game_state.collidables[i].get_width() * 0.1f);
+        g_game_state.collidables[i].set_height(g_game_state.collidables[i].get_height() * 0.1f);
         g_game_state.collidables[i].update(0.0f, nullptr, 0);
+        
+        if  (g_game_state.collidables[i].get_landingStatus()){
+            LOG(i);
+            LOG("TRUE");
+        }
     }
 
 
@@ -265,14 +272,14 @@ void process_input()
             if (fuel > 0) {
                 g_game_state.player->move_left();
                 fuel -= 0.35;
-                LOG(fuel);
+//                LOG(fuel);
             }
         }
         else if (key_state[SDL_SCANCODE_RIGHT]) {
             if (fuel > 0) {
                 g_game_state.player->move_right();
                 fuel -= 0.35;
-                LOG(fuel);
+//                LOG(fuel);
             }
         };
         
